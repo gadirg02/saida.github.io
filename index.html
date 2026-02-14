@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- Важный тег для правильного масштабирования на телефонах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Для моей любимой ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            color: white;
+            overflow-x: hidden;
+            background: black;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px 30px;
+            font-size: 16px;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            margin: 15px 0 5px;
+            font-size: clamp(24px, 8vw, 40px);
+            line-height: 1.3;
+            word-break: break-word;
+            padding: 0 10px;
+        }
+
+        h2 {
+            font-size: clamp(20px, 6vw, 30px);
+            margin: 15px 0 10px;
+        }
+
+        h3 {
+            font-size: 22px;
+            margin: 10px 0;
+            color: #ffb6c1;
+        }
+
+        #counter {
+            font-size: 18px;
+            margin: 10px 0 20px;
+            padding: 0 10px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            display: inline-block;
+            padding: 8px 20px;
+        }
+
+        /* Секции */
+        .section {
+            width: 100%;
+            max-width: 500px;
+            margin: 25px 0;
+            padding: 20px 15px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 30px;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 4px 15px rgba(255,105,180,0.3);
+            border: 1px solid rgba(255,192,203,0.3);
+        }
+
+        /* Слайдер */
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.5);
+            aspect-ratio: 1 / 1;
+        }
+
+        .slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .caption {
+            margin: 15px 10px 10px;
+            font-size: 18px;
+            min-height: 50px;
+            padding: 0 5px;
+        }
+
+        button {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            margin: 8px 5px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: manipulation;
+            min-width: 100px;
+            background: #ff4d6d;
+            color: white;
+            border: 2px solid #fff0f5;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #yesBtn {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 0 20px #4CAF80;
+        }
+
+        #noBtn {
+            background: #ff4d6d;
+            color: white;
+            position: static;
+            box-shadow: 0 0 15px #ff4d6d;
+        }
+
+        #answer {
+            font-size: 22px;
+            margin-top: 20px;
+            min-height: 40px;
+            font-weight: bold;
+            color: #ffb6c1;
+        }
+
+        /* Видео */
+        #videoBlock {
+            width: 100%;
+            max-width: 380px;
+            margin: 15px auto 0;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(255,105,180,0.6);
+        }
+
+        /* Падающие сердца */
+        .heart {
+            position: fixed;
+            top: -10px;
+            font-size: 24px;
+            animation: fall linear forwards;
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px hotpink);
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh); }
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== НОВЫЕ СТИЛИ ДЛЯ ДОПОЛНЕНИЙ ===== */
+
+        /* Квиз */
+        .quiz-question {
+            background: rgba(255,255,255,0.1);
+            padding: 20px 15px;
+            border-radius: 25px;
+            margin: 15px 0;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quiz-btn {
+            background: rgba(255,105,180,0.3);
+            border: 2px solid #ff69b4;
+            padding: 15px;
+            border-radius: 50px;
+            width: 100%;
+            margin: 0;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .quiz-btn.correct {
+            background: #4CAF50;
+            border-color: #fff;
+            transform: scale(1.02);
+        }
+
+        .quiz-btn.wrong {
+            background: #ff4d6d;
+            opacity: 0.7;
+        }
+
+        .quiz-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quiz-result {
+            font-size: 24px;
+            margin-top: 20px;
+            min-height: 50px;
+            font-weight: bold;
+        }
+
+        .quiz-progress {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        /* Градусник любви */
+        .thermometer {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 30px;
+            margin: 15px 0;
+        }
+
+        .thermometer-container {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(90deg, #ffb6c1, #ff1493);
+            border-radius: 30px;
+            overflow: hidden;
+            margin: 15px 0;
+            box-shadow: 0 0 20px #ff69b4;
+        }
+
+        .thermometer-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+            border-radius: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; box-shadow: 0 0 30px #ff1493; }
+            100% { opacity: 1; }
+        }
+
+        .thermometer-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ff69b4;
+            text-shadow: 0 0 20px #ff1493;
+            margin: 10px 0;
+        }
+
+        .thermometer-btn {
+            background: #ff69b4;
+            border: 2px solid white;
+            font-size: 20px;
+            padding: 15px 30px;
+        }
+
+        /* Игра "Поймай сердечко" */
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            overflow: hidden;
+            border: 2px solid #ff69b4;
+            margin: 15px 0;
+            touch-action: none;
+        }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .game-heart {
+            position: absolute;
+            font-size: 35px;
+            cursor: pointer;
+            user-select: none;
+            animation: float 3s ease-in-out;
+            filter: drop-shadow(0 0 10px #ff1493);
+            transition: transform 0.2s;
+            z-index: 20;
+        }
+
+        .game-heart:active {
+            transform: scale(1.5);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(280px) rotate(360deg); }
+        }
+
+        .game-score {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,105,180,0.9);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 25;
+            border: 2px solid white;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .game-btn {
+            background: #ff69b4;
+            padding: 10px 20px;
+            font-size: 16px;
+            min-width: auto;
+        }
+
+        /* Анимация "Обними меня" */
+        .hug-counter {
+            font-size: 48px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,105,180,0.2);
+            border-radius: 50px;
+        }
+
+        .hug-emoji {
+            font-size: 70px;
+            animation: hugAnimation 0.5s ease;
+        }
+
+        @keyframes hugAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .hug-text {
+            font-size: 24px;
+            margin-top: 10px;
+            color: #ffb6c1;
+        }
+
+        #noBtn.absolute {
+            position: absolute;
+            z-index: 100;
+        }
+
+        /* ===== НОВЫЕ СТИЛИ: Свеча ===== */
+        .candle-container {
+            background: rgba(255,105,180,0.1);
+            padding: 20px;
+            border-radius: 50px;
+            margin: 15px 0;
+        }
+        
+        .candle {
+            font-size: 80px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            user-select: none;
+        }
+        
+        .candle:active {
+            transform: scale(1.1);
+        }
+        
+        .flame {
+            font-size: 50px;
+            margin-bottom: -20px;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 20px orange);
+        }
+        
+        .flame.hidden {
+            opacity: 0;
+            filter: none;
+        }
+        
+        .candle-body {
+            font-size: 80px;
+            line-height: 1;
+        }
+        
+        #candleText {
+            font-size: 20px;
+            margin-top: 10px;
+            color: #ffb6c1;
+        }
+
+        /* ===== НОВЫЕ СТИЛИ: Ромашка ===== */
+        .daisy-container {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 50px;
+            margin: 15px 0;
+        }
+        
+        .daisy {
+            font-size: 80px;
+            cursor: pointer;
+            animation: spin 10s linear infinite;
+            user-select: none;
+        }
+        
+        .daisy:active {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        #daisyAnswer {
+            font-size: 24px;
+            margin-top: 15px;
+            min-height: 60px;
+            color: #ffb6c1;
+            font-weight: bold;
+        }
+
+        /* ===== НОВЫЕ СТИЛИ: Конверт с письмом ===== */
+        .envelope-container {
+            background: rgba(255,105,180,0.1);
+            padding: 20px;
+            border-radius: 50px;
+            margin: 15px 0;
+        }
+        
+        .envelope {
+            font-size: 100px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .envelope:active {
+            transform: scale(1.1);
+        }
+        
+        .envelope.opened {
+            filter: drop-shadow(0 0 20px gold);
+        }
+        
+        .letter-content {
+            background: rgba(255,255,240,0.9);
+            color: #333;
+            padding: 25px 20px;
+            border-radius: 30px;
+            margin-top: 20px;
+            font-size: 20px;
+            line-height: 1.6;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid #ff69b4;
+            transition: all 0.5s;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .letter-content.hidden {
+            display: none;
+        }
+        
+        .letter-signature {
+            text-align: right;
+            margin-top: 15px;
+            font-style: italic;
+            color: #ff1493;
+        }
+
+        /* ===== НОВЫЕ СТИЛИ: Любовный гороскоп ===== */
+        .horoscope-container {
+            background: rgba(255,105,180,0.1);
+            padding: 20px;
+            border-radius: 50px;
+            margin: 15px 0;
+        }
+        
+        .horoscope-box {
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            padding: 25px;
+            border: 2px solid #ff69b4;
+            margin: 15px 0;
+        }
+        
+        #horoscopeText {
+            font-size: 22px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff0f5;
+            line-height: 1.5;
+        }
+        
+        .horoscope-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: twinkle 2s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .horoscope-btn {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            font-size: 22px;
+            padding: 18px 30px;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="fireworks"></canvas>
+
+<h1>❤️ Саида ❤️</h1>
+<h1>💙 С ДНЕМ СВЯТОГО ВАЛЕНТИНА 💙</h1>
+
+<div id="counter"></div>
+
+<div class="section">
+    <h2>Наши моменты</h2>
+    <div class="slider">
+        <img id="slide" src="photo1.jpg" alt="наше фото">
+    </div>
+    <div class="caption" id="caption"></div>
+    <div class="nav-buttons">
+        <button onclick="prev()">← Назад</button>
+        <button onclick="next()">Вперед →</button>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: КВИЗ ===== -->
+<div class="section">
+    <h2>❓ Как хорошо ты меня знаешь?</h2>
+    <div class="quiz-question" id="quiz">
+        <h3 id="questionText">Загрузка...</h3>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-progress">
+            <div class="quiz-progress-bar" id="quizProgress"></div>
+        </div>
+        <div class="quiz-result" id="quizResult"></div>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: ОБНИМИ МЕНЯ ===== -->
+<div class="section">
+    <h2>🤗 Обними меня</h2>
+    <div class="hug-counter" onclick="addHug()">
+        <div class="hug-emoji" id="hugEmoji">🤗</div>
+        <div class="hug-text" id="hugText">Нажми, чтобы обнять!</div>
+        <div id="hugCount">0 обнимашек</div>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: ГРАДУСНИК ЛЮБВИ ===== -->
+<div class="section">
+    <h2>🌡️ Градусник любви</h2>
+    <div class="thermometer">
+        <div class="thermometer-container">
+            <div class="thermometer-fill" id="thermometerFill"></div>
+        </div>
+        <div class="thermometer-value" id="thermometerValue">100%</div>
+        <button class="thermometer-btn" onclick="increaseLove()">❤️ Повысить градус ❤️</button>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: МИНИ-ИГРА ===== -->
+<div class="section">
+    <h2>🎮 Поймай сердечко</h2>
+    <div class="game-container">
+        <div class="game-score" id="gameScore">❤️ 0</div>
+        <div class="game-area" id="gameArea" onclick="catchHeart(event)"></div>
+    </div>
+    <div class="game-controls">
+        <button class="game-btn" onclick="startGame()">▶ Начать игру</button>
+        <button class="game-btn" onclick="stopGame()">⏹ Стоп</button>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: СВЕЧА (романтический уголок) ===== -->
+<div class="section">
+    <h2>🕯️ Наша свеча</h2>
+    <div class="candle-container">
+        <div class="candle" onclick="toggleCandle()">
+            <div class="flame" id="flame">🔥</div>
+            <div class="candle-body">🕯️</div>
+        </div>
+        <div id="candleText">Зажги свечу любви</div>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: РОМАШКА (романтический уголок) ===== -->
+<div class="section">
+    <h2>🌼 Ромашка</h2>
+    <div class="daisy-container">
+        <div class="daisy" onclick="tellFortune()">🌼</div>
+        <div id="daisyAnswer">Нажми на ромашку, чтобы узнать ответ</div>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: КОНВЕРТ С ПИСЬМОМ ===== -->
+<div class="section">
+    <h2>💌 Секретное письмо</h2>
+    <div class="envelope-container">
+        <div class="envelope" id="envelope" onclick="openLetter()">✉️</div>
+        <div class="letter-content hidden" id="letter">
+            💕 <strong>Моя любимая Саида!</strong><br><br>
+            С каждым днём я люблю тебя всё сильнее.<br>
+            Ты — самое лучшее, что случилось в моей жизни.<br>
+            Спасибо, что ты есть!<br><br>
+            <div class="letter-signature">Твой навсегда ❤️</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== НОВЫЙ БЛОК: ЛЮБОВНЫЙ ГОРОСКОП ===== -->
+<div class="section">
+    <h2>⭐ Любовный гороскоп</h2>
+    <div class="horoscope-container">
+        <div class="horoscope-box">
+            <div class="horoscope-icon">✨</div>
+            <div id="horoscopeText">Нажми на кнопку, чтобы узнать, что звёзды говорят о нас сегодня</div>
+        </div>
+        <button class="horoscope-btn" onclick="getHoroscope()">🔮 Узнать судьбу 🔮</button>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Ты меня любишь? 😄</h2>
+    <button id="yesBtn" onclick="yesLove()">Да ❤️</button>
+    <button id="noBtn">Нет 🙈</button>
+    <p id="answer"></p>
+</div>
+
+<div class="section">
+    <h2>Всё, что я к тебе испытываю... 🎬</h2>
+    <button onclick="toggleVideo()">Показать / Скрыть видео</button>
+    <div id="videoBlock" style="display:none;">
+        <video controls preload="metadata">
+            <source src="video.mp4" type="video/mp4">
+        </video>
+    </div>
+</div>
+
+
+
+<audio id="music" loop autoplay>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    // ====== СЧЁТЧИК ======
+    const startDate = new Date("2023-10-29");
+    function updateCounter() {
+        const now = new Date();
+        const diff = now - startDate;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        document.getElementById("counter").innerHTML = "Мы вместе уже " + days + " дней ❤️";
+    }
+    updateCounter();
+    setInterval(updateCounter, 1000);
+
+    // ====== СЛАЙДЕР ======
+    const slides = [
+        { src: "photo1.jpg", text: "В тот день моя жизнь изменилась навсегда" },
+        { src: "photo2.jpg", text: "Я понял, насколько ты особенная" },
+        { src: "photo3.jpg", text: "Твоя улыбка — моё любимое зрелище" },
+        { src: "photo4.jpg", text: "С тобой каждый момент становится ценным" },
+        { src: "photo5.jpg", text: "Я счастлив просто быть рядом с тобой" },
+        { src: "photo6.jpg", text: "Ты делаешь обычные дни особенными" },
+        { src: "photo7.jpg", text: "С тобой я чувствую настоящий покой" },
+        { src: "photo8.jpg", text: "Ты — лучшее, что случилось со мной" },
+        { src: "photo9.jpg", text: "Я благодарен судьбе за тебя" },
+        { src: "photo10.jpg", text: "Каждый день рядом с тобой — подарок" },
+        { src: "photo11.jpg", text: "Ты моё вдохновение" },
+        { src: "photo12.jpg", text: "Моё сердце всегда рядом с тобой" },
+        { src: "photo13.jpg", text: "Ты моя любовь" },
+        { src: "photo14.jpg", text: "Ты мой дом" },
+        { src: "photo15.jpg", text: "И это только начало нашей истории ❤️" }
+    ];
+
+    let index = 0;
+    function showSlide() {
+        const img = document.getElementById("slide");
+        img.style.opacity = 0;
+        setTimeout(() => {
+            img.src = slides[index].src;
+            document.getElementById("caption").innerHTML = slides[index].text;
+            img.style.opacity = 1;
+        }, 500);
+    }
+    function next() { index = (index + 1) % slides.length; showSlide(); }
+    function prev() { index = (index - 1 + slides.length) % slides.length; showSlide(); }
+    showSlide();
+    setInterval(next, 5000);
+
+    // ====== КНОПКА "НЕТ" УБЕГАЕТ ======
+    const noBtn = document.getElementById("noBtn");
+    noBtn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        moveNoButton();
+    });
+    noBtn.addEventListener("click", (e) => {
+        moveNoButton();
+    });
+
+    function moveNoButton() {
+        const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+        const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+        let newX = Math.random() * maxX;
+        let newY = Math.random() * maxY;
+        newX = Math.max(10, Math.min(newX, maxX));
+        newY = Math.max(10, Math.min(newY, maxY));
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = newX + 'px';
+        noBtn.style.top = newY + 'px';
+        noBtn.classList.add('absolute');
+    }
+
+    function yesLove() {
+        document.getElementById("answer").innerHTML = "Я люблю тебя тоже, бесконечно ❤️";
+        launchFireworks();
+        noBtn.style.position = 'static';
+        noBtn.classList.remove('absolute');
+    }
+
+    // ====== ВИДЕО ======
+    function toggleVideo() {
+        const block = document.getElementById("videoBlock");
+        block.style.display = block.style.display === "none" ? "block" : "none";
+    }
+
+    // ====== ПАДАЮЩИЕ СЕРДЦА ======
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+    }
+    setInterval(createHeart, 300);
+
+    // ====== ЗВЁЗДНОЕ НЕБО ======
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initStars();
+    }
+
+    function initStars() {
+        stars = [];
+        for (let i = 0; i < 150; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2.5,
+                alpha: Math.random()
+            });
+        }
+    }
+
+    function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        stars.forEach(s => {
+            ctx.globalAlpha = s.alpha;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+            ctx.fill();
+            s.alpha += Math.random() * 0.02 - 0.01;
+            if (s.alpha <= 0.1) s.alpha = 0.1;
+            if (s.alpha >= 1) s.alpha = 1;
+        });
+        requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        fwCanvas.width = window.innerWidth;
+        fwCanvas.height = window.innerHeight;
+    });
+    resizeCanvas();
+    drawStars();
+
+    // ====== МУЗЫКА ======
+    const music = document.getElementById("music");
+    window.addEventListener("load", () => {
+        music.play().catch(() => {
+            document.body.addEventListener("click", () => {
+                music.play();
+            }, { once: true });
+        });
+    });
+
+    // ====== САЛЮТ ======
+    const fwCanvas = document.getElementById("fireworks");
+    const fwCtx = fwCanvas.getContext("2d");
+    fwCanvas.width = window.innerWidth;
+    fwCanvas.height = window.innerHeight;
+
+    let particles = [];
+
+    function launchFireworks() {
+        for (let i = 0; i < 5; i++) {
+            createExplosion(
+                Math.random() * fwCanvas.width,
+                Math.random() * fwCanvas.height * 0.6
+            );
+        }
+    }
+
+    function createExplosion(x, y) {
+        const colors = ["#ff4d6d", "#ffd700", "#00eaff", "#7cff00", "#ff00ff"];
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 5,
+                vy: (Math.random() - 0.5) * 5,
+                alpha: 1,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            });
+        }
+    }
+
+    function drawFireworks() {
+        fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+        particles.forEach((p, index) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.01;
+            fwCtx.globalAlpha = p.alpha;
+            fwCtx.fillStyle = p.color;
+            fwCtx.beginPath();
+            fwCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+            fwCtx.fill();
+            if (p.alpha <= 0) {
+                particles.splice(index, 1);
+            }
+        });
+        requestAnimationFrame(drawFireworks);
+    }
+    drawFireworks();
+
+    // ====== КВИЗ ======
+    const quizQuestions = [
+        // ===== 1. ОТНОШЕНИЯ (5 вопросов) =====
+        {
+            question: "❓ 1/20: Где мы познакомились?",
+            options: ["В парке 🌳", "В кафе ☕", "В школе/универе 📚", "В интернете🌐"],
+            correct: 3 // ИЗМЕНИТЕ НА ПРАВИЛЬНЫЙ ИНДЕКС (0-3)
+        },
+        {
+            question: "❓ 2/20: Дата наших отношений?",
+            options: ["29 октября 🍂", "14 февраля ❤️", "31 декабря 🎄", "1 мая 🌸"],
+            correct: 0 // ИЗМЕНИТЕ НА ПРАВИЛЬНЫЙ ИНДЕКС
+        },
+        {
+            question: "❓ 3/20: Кто первый признался в любви?",
+            options: ["Я", "Ты 😊", "Оба одновременно 🤗", "Ещё не признались 😅"],
+            correct: 1 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 4/20: Наше любимое совместное занятие?",
+            options: ["Смотреть фильмы 🎬", "Гулять в парке 🚶", "Готовить вместе 🍳", "Обниматься 🤗"],
+            correct: 3 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 5/20: Где был наш первый поцелуй?",
+            options: ["В парке 🌙", "У меня дома 🏠", "В кино 🎥", "В машине 🚗"],
+            correct: 0 // ИЗМЕНИТЕ
+        },
+        
+        // ===== 2. О НЕЙ (5 вопросов) =====
+        {
+            question: "❓ 6/20: Какой у меня любимый цвет?",
+            options: ["Розовый 💖", "Красный ❤️", "Черный 🖤", "Фиолетовый 💜"],
+            correct: 2 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 7/20: Моё любимое время года?",
+            options: ["Весна (день рождения) 🌸", "Лето (тепло) ☀️", "Осень (романтика) 🍂", "Зима (Новый год) ❄️"],
+            correct: 0 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 8/20: Что я люблю есть больше всего?",
+            options: ["Пиццу с сыром🍕", "Суши 🍣", "Шоколад 🍫", "Фрукты 🍎"],
+            correct: 0 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 9/20: Мой любимый фильм?",
+            options: ["Романтическая комедия 💕", "Ужасы 👻", "Мультфильмы 🐭", "Фантастика 🚀"],
+            correct: 1 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 10/20: Что я делаю, когда грустно?",
+            options: ["Ем сладкое 🍰", "Смотрю сериалы 📺", "Хочу обнимашек 🤗", "Молчу 😔"],
+            correct: 2 // ИЗМЕНИТЕ
+        },
+        
+        // ===== 3. О НЁМ (5 вопросов) =====
+        {
+            question: "❓ 11/20: Моё любимое блюдо?",
+            options: ["Мясо 🥩", "Макароны 🍝", "Картошка 🥔", "Пельмени 🥟"],
+            correct: 0 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 12/20: Мой любимый напиток?",
+            options: ["Кофе ☕", "Чай ☕", "Колу 🥤", "Сок 🧃"],
+            correct: 3 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 13/20: Что я люблю дарить?",
+            options: ["Цветы 🌹", "Мягкие игрушки 🧸", "Сладости 🍬", "Украшения 💍"],
+            correct: 0 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 14/20: Мой характер?",
+            options: ["Спокойный 😌", "Весёлый 😄", "Романтичный 💕", "Заботливый 🤗"],
+            correct: 1 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 15/20: Что меня бесит?",
+            options: ["Опаздывать ⏰", "Когда холодно ❄️", "Громкая музыка 🔇", "Очереди 🚶🚶🚶"],
+            correct: 3 // ИЗМЕНИТЕ
+        },
+        
+        // ===== 4. НАШЕ БУДУЩЕЕ (5 вопросов) =====
+        {
+            question: "❓ 16/20: Куда хотим поехать вместе?",
+            options: ["В Париж 🗼", "На море 🌊", "В горы ⛰️", "В Сочи 🏖️"],
+            correct: 0 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 17/20: Сколько детей хотим?",
+            options: ["1 👶", "2 👧👦", "3 👨‍👩‍👧‍👦", "Ни одного 🙅"],
+            correct: 1 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 18/20: Какое животное хотим завести?",
+            options: ["Кошку 🐱", "Собаку 🐶", "Попугая 🦜", "Никакое 🙅"],
+            correct: 1 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 19/20: Где будем жить?",
+            options: ["В квартире 🏢", "В своем доме 🏡", "В другом городе ✈️", "Пока не знаем 🤷"],
+            correct: 1 // ИЗМЕНИТЕ
+        },
+        {
+            question: "❓ 20/20: Как назовём первого ребенка?",
+            options: ["В честь меня 👦", "В честь тебя 👧", "Красивое имя 💫", "Ещё не думали 🤔"],
+            correct: 2 // ИЗМЕНИТЕ
+        }
+    ];
+
+    let currentQuestion = 0;
+    let correctAnswers = 0;
+
+    function loadQuiz() {
+        const q = quizQuestions[currentQuestion];
+        document.getElementById('questionText').innerText = q.question;
+        const optionsDiv = document.getElementById('quizOptions');
+        optionsDiv.innerHTML = '';
+        
+        q.options.forEach((option, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-btn';
+            btn.innerText = option;
+            btn.onclick = () => checkAnswer(index);
+            optionsDiv.appendChild(btn);
+        });
+
+        const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+        document.getElementById('quizProgress').style.width = progress + '%';
+    }
+
+    function checkAnswer(selected) {
+        const correct = quizQuestions[currentQuestion].correct;
+        const buttons = document.querySelectorAll('.quiz-btn');
+        
+        if (selected === correct) {
+            correctAnswers++;
+        }
+        
+        buttons.forEach((btn, index) => {
+            btn.disabled = true;
+            if (index === correct) {
+                btn.classList.add('correct');
+                btn.innerText += ' ✓';
+            } else if (index === selected && selected !== correct) {
+                btn.classList.add('wrong');
+                btn.innerText += ' ✗';
+            }
+        });
+
+        setTimeout(() => {
+            if (currentQuestion < quizQuestions.length - 1) {
+                currentQuestion++;
+                loadQuiz();
+            } else {
+                const result = document.getElementById('quizResult');
+                if (correctAnswers === quizQuestions.length) {
+                    result.innerHTML = '🎉 ИДЕАЛЬНО! Ты знаешь меня лучше всех! 🎉';
+                    launchFireworks();
+                } else {
+                    result.innerHTML = `❤️ Ты ответила правильно на ${correctAnswers} из ${quizQuestions.length}. Но я всё равно тебя люблю! ❤️`;
+                }
+            }
+        }, 1500);
+    }
+
+    loadQuiz();
+
+    // ====== ОБНИМИ МЕНЯ ======
+    let hugCounter = 0;
+    
+    function addHug() {
+        hugCounter++;
+        document.getElementById('hugCount').innerHTML = '❤️ '.repeat(Math.min(hugCounter, 10)) + ' ' + hugCounter + ' обнимашек';
+        
+        const emoji = document.getElementById('hugEmoji');
+        emoji.style.animation = 'none';
+        emoji.offsetHeight;
+        emoji.style.animation = 'hugAnimation 0.5s ease';
+        
+        if (hugCounter === 10) {
+            document.getElementById('hugText').innerHTML = 'Крепкие объятия! 🤗';
+            launchFireworks();
+        } else if (hugCounter === 25) {
+            document.getElementById('hugText').innerHTML = 'Я тебя очень сильно люблю! ❤️';
+        } else if (hugCounter === 50) {
+            document.getElementById('hugText').innerHTML = 'ТЫ ЛУЧШАЯ! 🌟';
+        }
+    }
+
+    // ====== ГРАДУСНИК ЛЮБВИ ======
+    let loveLevel = 100;
+    
+    function increaseLove() {
+        loveLevel += Math.random() * 5;
+        if (loveLevel > 150) loveLevel = 100;
+        
+        document.getElementById('thermometerValue').innerHTML = Math.round(loveLevel) + '%';
+        document.getElementById('thermometerFill').style.width = loveLevel + '%';
+        
+        if (loveLevel > 120) {
+            launchFireworks();
+        }
+    }
+
+    // ====== МИНИ-ИГРА ======
+    let gameActive = false;
+    let gameScore = 0;
+    let gameInterval;
+
+    function startGame() {
+        gameActive = true;
+        gameScore = 0;
+        document.getElementById('gameScore').innerHTML = '❤️ ' + gameScore;
+        if (gameInterval) clearInterval(gameInterval);
+        gameInterval = setInterval(createGameHeart, 800);
+    }
+
+    function stopGame() {
+        gameActive = false;
+        if (gameInterval) {
+            clearInterval(gameInterval);
+            gameInterval = null;
+        }
+        document.querySelectorAll('.game-heart').forEach(h => h.remove());
+    }
+
+    function createGameHeart() {
+        if (!gameActive) return;
+        
+        const gameArea = document.getElementById('gameArea');
+        const heart = document.createElement('div');
+        heart.className = 'game-heart';
+        heart.innerHTML = ['❤️','🧡','💛','💚','💙','💜'][Math.floor(Math.random() * 6)];
+        heart.style.left = Math.random() * (gameArea.offsetWidth - 50) + 'px';
+        heart.style.top = '0px';
+        heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        
+        heart.onclick = (e) => {
+            e.stopPropagation();
+            if (gameActive) {
+                gameScore++;
+                document.getElementById('gameScore').innerHTML = '❤️ ' + gameScore;
+                heart.remove();
+                
+                if (gameScore === 10) launchFireworks();
+                if (gameScore === 20) launchFireworks();
+            }
+        };
+        
+        gameArea.appendChild(heart);
+        
+        setTimeout(() => {
+            if (heart.parentNode) heart.remove();
+        }, 4000);
+    }
+
+    function catchHeart(event) {
+        // Пусто, сердечки ловятся по клику на них
+    }
+
+    // ====== НОВОЕ: СВЕЧА ======
+    function toggleCandle() {
+        const flame = document.getElementById('flame');
+        flame.classList.toggle('hidden');
+        const candleText = document.getElementById('candleText');
+        
+        if (flame.classList.contains('hidden')) {
+            candleText.innerHTML = 'Свеча погасла 🌙';
+        } else {
+            candleText.innerHTML = 'Горит огонь любви ❤️';
+            launchFireworks(); // маленький салют когда зажигаем
+        }
+    }
+
+    // ====== НОВОЕ: РОМАШКА ======
+    function tellFortune() {
+        const fortunes = [
+            "🌹 Любит бесконечно!",
+            "💕 Очень сильно любит!",
+            "💖 Просто обожает тебя!",
+            "💗 Ты - его всё!",
+            "💓 Любит больше жизни!",
+            "💘 Без ума от тебя!"
+        ];
+        
+        const randomIndex = Math.floor(Math.random() * fortunes.length);
+        const answer = fortunes[randomIndex];
+        
+        document.getElementById('daisyAnswer').innerHTML = answer + ' ❤️';
+        
+        // Эффект - вращение при нажатии
+        const daisy = document.querySelector('.daisy');
+        daisy.style.animation = 'none';
+        daisy.offsetHeight;
+        daisy.style.animation = 'spin 1s linear infinite';
+        
+        setTimeout(() => {
+            daisy.style.animation = 'spin 10s linear infinite';
+        }, 1000);
+        
+        launchFireworks(); // маленький салют
+    }
+
+    // ====== НОВОЕ: КОНВЕРТ С ПИСЬМОМ ======
+    function openLetter() {
+        const envelope = document.getElementById('envelope');
+        const letter = document.getElementById('letter');
+        
+        envelope.classList.toggle('opened');
+        letter.classList.toggle('hidden');
+        
+        if (!letter.classList.contains('hidden')) {
+            envelope.innerHTML = '💌'; // открытый конверт
+            launchFireworks(); // салют при открытии письма
+        } else {
+            envelope.innerHTML = '✉️'; // закрытый конверт
+        }
+    }
+
+    // ====== НОВОЕ: ЛЮБОВНЫЙ ГОРОСКОП ======
+    function getHoroscope() {
+        const predictions = [
+            "✨ Сегодня вас ждёт море нежности и приятных сюрпризов!",
+            "💫 Звёзды говорят, что он думает о тебе прямо сейчас!",
+            "⭐ Вечером будет романтический сюрприз!",
+            "🌟 Сегодня ты особенно красива в его глазах!",
+            "🌠 Вас ждёт незабываемый вечер вдвоём!",
+            "💫 Он хочет тебя обнять - сделай это первой!",
+            "✨ Сегодня идеальный день для признаний!",
+            "⭐ Звёзды предсказывают поцелуй до полуночи!"
+        ];
+        
+        const randomIndex = Math.floor(Math.random() * predictions.length);
+        const prediction = predictions[randomIndex];
+        
+        document.getElementById('horoscopeText').innerHTML = prediction;
+        
+        // Анимация иконки
+        const icon = document.querySelector('.horoscope-icon');
+        icon.style.animation = 'none';
+        icon.offsetHeight;
+        icon.style.animation = 'twinkle 0.5s infinite';
+        
+        setTimeout(() => {
+            icon.style.animation = 'twinkle 2s infinite';
+        }, 1000);
+        
+        launchFireworks(); // салют при получении предсказания
+    }
+</script>
+</body>
+</html>
