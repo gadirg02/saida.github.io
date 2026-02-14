@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Для моей любимой ❤️</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    text-align:center;
+    color:white;
+    overflow-x:hidden;
+    background:black;
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+h1{margin-top:40px;font-size:40px;}
+
+.section{margin:40px 0;}
+
+#counter{font-size:20px;margin-top:10px;}
+
+.slider{
+    position:relative;
+    width:320px;
+    margin:20px auto;
+}
+
+.slider img{
+    width:100%;
+    border-radius:20px;
+    opacity:1;
+    transition:opacity 1s ease-in-out;
+}
+
+.caption{margin-top:10px;}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    margin:5px;
+}
+
+#yesBtn{background:#4CAF50;color:white;}
+#noBtn{background:#ff4d6d;color:white;}
+
+video{width:320px;border-radius:20px;margin-top:10px;}
+
+.heart{
+    position:fixed;
+    top:-10px;
+    font-size:20px;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+    to{transform:translateY(100vh);}
+}
+
+#proposal{
+    display:none;
+    font-size:30px;
+    margin-top:20px;
+    animation:fadeIn 2s;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+#fireworks{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="fireworks"></canvas>
+
+<h1>❤️Саида ❤️</h1>
+<h1>💙С ДНЕМ СВЯТОГО ВАЛЕНТИНА💙</h1>
+
+<div id="counter"></div>
+
+<div class="section">
+
+<h2>Наши моменты</h2>
+
+<div class="slider">
+    <img id="slide" src="photo1.jpg">
+</div>
+
+<div class="caption" id="caption"></div>
+
+<button onclick="prev()">←</button>
+<button onclick="next()">→</button>
+
+</div>
+
+<div class="section">
+
+<h2>Ты меня любишь? 😄</h2>
+
+<button id="yesBtn" onclick="yesLove()">Да ❤️</button>
+<button id="noBtn">Нет 🙈</button>
+
+<p id="answer"></p>
+
+</div>
+
+<div class="section">
+<h2>Всё, что я к тебе испытываю... 🎬</h2>
+<button onclick="toggleVideo()">Показать / скрыть</button>
+<div id="videoBlock" style="display:none;">
+<video controls>
+<source src="video.mp4" type="video/mp4">
+</video>
+</div>
+</div>
+
+
+
+<audio id="music" loop autoplay>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+// ====== СЧЁТЧИК ======
+const startDate=new Date("2023-10-29");
+function updateCounter(){
+const now=new Date();
+const diff=now-startDate;
+const days=Math.floor(diff/(1000*60*60*24));
+document.getElementById("counter").innerHTML=
+"Мы вместе уже "+days+" дней ❤️";
+}
+updateCounter();
+setInterval(updateCounter,1000);
+
+
+// ====== СЛАЙДЕР ======
+const slides = [
+
+{src:"photo1.jpg", text:"В тот день моя жизнь изменилась навсегда"},
+{src:"photo2.jpg", text:"Я понял, насколько ты особенная"},
+{src:"photo3.jpg", text:"Твоя улыбка — моё любимое зрелище"},
+{src:"photo4.jpg", text:"С тобой каждый момент становится ценным"},
+{src:"photo5.jpg", text:"Я счастлив просто быть рядом с тобой"},
+{src:"photo6.jpg", text:"Ты делаешь обычные дни особенными"},
+{src:"photo7.jpg", text:"С тобой я чувствую настоящий покой"},
+{src:"photo8.jpg", text:"Ты — лучшее, что случилось со мной"},
+{src:"photo9.jpg", text:"Я благодарен судьбе за тебя"},
+{src:"photo10.jpg", text:"Каждый день рядом с тобой — подарок"},
+{src:"photo11.jpg", text:"Ты моё вдохновение"},
+{src:"photo12.jpg", text:"Моё сердце всегда рядом с тобой"},
+{src:"photo13.jpg", text:"Ты моя любовь"},
+{src:"photo14.jpg", text:"Ты мой дом"},
+{src:"photo15.jpg", text:"И это только начало нашей истории ❤️"}
+
+];
+
+let index=0;
+function showSlide(){
+const img=document.getElementById("slide");
+img.style.opacity=0;
+setTimeout(()=>{
+img.src=slides[index].src;
+document.getElementById("caption").innerHTML=slides[index].text;
+img.style.opacity=1;
+},500);
+}
+function next(){index=(index+1)%slides.length;showSlide();}
+function prev(){index=(index-1+slides.length)%slides.length;showSlide();}
+showSlide();
+setInterval(next,5000);
+
+
+// ====== КНОПКА УБЕГАЕТ ======
+const noBtn=document.getElementById("noBtn");
+noBtn.addEventListener("mouseover",()=>{
+noBtn.style.position="absolute";
+noBtn.style.left=Math.random()*window.innerWidth+"px";
+noBtn.style.top=Math.random()*window.innerHeight+"px";
+});
+function yesLove(){
+
+document.getElementById("answer").innerHTML=
+"Я люблю тебя тоже, бесконечно ❤️";
+
+launchFireworks();
+
+}
+
+
+
+// ====== ВИДЕО ======
+function toggleVideo(){
+const block=document.getElementById("videoBlock");
+block.style.display=block.style.display==="none"?"block":"none";
+}
+
+
+// ====== ПРЕДЛОЖЕНИЕ ======
+function showProposal(){
+document.getElementById("proposal").style.display="block";
+}
+
+
+// ====== ПАДАЮЩИЕ СЕРДЦА ======
+function createHeart(){
+const heart=document.createElement("div");
+heart.classList.add("heart");
+heart.innerHTML="❤️";
+heart.style.left=Math.random()*100+"vw";
+heart.style.animationDuration=(Math.random()*3+2)+"s";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),5000);
+}
+setInterval(createHeart,400);
+
+
+// ====== ЗВЁЗДНОЕ НЕБО ======
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+for(let i=0;i<150;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+radius:Math.random()*2,
+alpha:Math.random()
+});
+}
+
+function drawStars(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(s=>{
+ctx.globalAlpha=s.alpha;
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
+ctx.fill();
+s.alpha+=Math.random()*0.02-0.01;
+if(s.alpha<=0) s.alpha=0.1;
+if(s.alpha>=1) s.alpha=1;
+});
+requestAnimationFrame(drawStars);
+}
+drawStars();
+
+
+// ====== МУЗЫКА ======
+const music=document.getElementById("music");
+window.addEventListener("load",()=>{
+music.play().catch(()=>{
+document.body.addEventListener("click",()=>{
+music.play();
+},{once:true});
+});
+});
+// ====== САЛЮТ ======
+
+const fwCanvas = document.getElementById("fireworks");
+const fwCtx = fwCanvas.getContext("2d");
+
+fwCanvas.width = window.innerWidth;
+fwCanvas.height = window.innerHeight;
+
+let particles = [];
+
+function launchFireworks(){
+
+    for(let i=0;i<5;i++){
+        createExplosion(
+            Math.random()*fwCanvas.width,
+            Math.random()*fwCanvas.height/2
+        );
+    }
+
+}
+
+function createExplosion(x,y){
+
+    const colors = ["#ff4d6d","#ffd700","#00eaff","#7cff00","#ff00ff"];
+
+    for(let i=0;i<80;i++){
+
+        particles.push({
+            x:x,
+            y:y,
+            vx:(Math.random()-0.5)*6,
+            vy:(Math.random()-0.5)*6,
+            alpha:1,
+            color:colors[Math.floor(Math.random()*colors.length)]
+        });
+
+    }
+
+}
+
+function drawFireworks(){
+
+    fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
+
+    particles.forEach((p,index)=>{
+
+        p.x+=p.vx;
+        p.y+=p.vy;
+        p.alpha-=0.01;
+
+        fwCtx.globalAlpha=p.alpha;
+        fwCtx.fillStyle=p.color;
+
+        fwCtx.beginPath();
+        fwCtx.arc(p.x,p.y,3,0,Math.PI*2);
+        fwCtx.fill();
+
+        if(p.alpha<=0){
+            particles.splice(index,1);
+        }
+
+    });
+
+    requestAnimationFrame(drawFireworks);
+
+}
+
+drawFireworks();
+
+
+</script>
+
+</body>
+</html>
